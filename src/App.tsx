@@ -1,67 +1,17 @@
-import { Suspense, useEffect } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Environment } from '@react-three/drei'
-import VinylRecord from './components/VinylRecord'
+import { Suspense } from 'react'
 import Header from './components/Header'
-import Hero from './components/Hero'
-import ProductShowcase from './components/ProductShowcase'
-import VinylCardScroll from './components/VinylCardScroll'
+import VinylCarousel3D from './components/VinylCarousel3D'
 import './App.css'
 
 function App() {
-  // Smooth scroll behavior
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = 'smooth'
-  }, [])
-
   return (
     <div className="app">
       <Header />
 
-      {/* Hero Section with 3D Vinyl */}
-      <section className="hero-section">
-        <div className="canvas-container">
-          <Canvas
-            camera={{ position: [0, 2, 5], fov: 45 }}
-            gl={{ antialias: true, alpha: true }}
-            style={{ background: 'transparent' }}
-          >
-            <Suspense fallback={null}>
-              <ambientLight intensity={0.4} />
-              <spotLight
-                position={[10, 10, 10]}
-                angle={0.15}
-                penumbra={1}
-                intensity={1}
-                castShadow
-              />
-              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ff4d4d" />
-
-              <VinylRecord />
-
-              <Environment preset="city" />
-              <OrbitControls
-                enableZoom={true}
-                enablePan={false}
-                minDistance={3}
-                maxDistance={10}
-                minPolarAngle={Math.PI / 6}
-                maxPolarAngle={Math.PI / 2}
-                autoRotate
-                autoRotateSpeed={0.5}
-              />
-            </Suspense>
-          </Canvas>
-        </div>
-
-        <Hero />
-      </section>
-
-      {/* Products Section */}
-      <ProductShowcase />
-
-      {/* 3D Card Scroll Section */}
-      <VinylCardScroll />
+      {/* 3D Vinyl Carousel - Full Page Hero */}
+      <Suspense fallback={<div className="loading">Loading...</div>}>
+        <VinylCarousel3D />
+      </Suspense>
 
       {/* Footer */}
       <footer className="footer">
