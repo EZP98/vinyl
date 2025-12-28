@@ -5,6 +5,7 @@ import VinylRecord from './components/VinylRecord'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import ProductShowcase from './components/ProductShowcase'
+import VinylCardScroll from './components/VinylCardScroll'
 import './App.css'
 
 function App() {
@@ -58,6 +59,9 @@ function App() {
 
       {/* Products Section */}
       <ProductShowcase />
+
+      {/* 3D Card Scroll Section */}
+      <VinylCardScroll />
 
       {/* Footer */}
       <footer className="footer">

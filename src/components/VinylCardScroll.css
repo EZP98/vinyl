@@ -1,0 +1,359 @@
+.vinyl-card-scroll-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 80px 0;
+  background: linear-gradient(180deg, var(--bg-primary) 0%, #0f0f0f 50%, var(--bg-primary) 100%);
+  overflow: hidden;
+}
+
+.vinyl-scroll-header {
+  text-align: center;
+  padding: 0 40px;
+  margin-bottom: 40px;
+}
+
+.vinyl-scroll-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.vinyl-scroll-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+}
+
+.vinyl-scroll-description {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Canvas container */
+.vinyl-card-scroll-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.vinyl-card-scroll-container:active {
+  cursor: grabbing;
+}
+
+/* Scroll hints */
+.scroll-hint {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  animation: bounce 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.scroll-hint svg {
+  width: 24px;
+  height: 24px;
+}
+
+.scroll-hint.top {
+  top: 20px;
+  animation-delay: 0s;
+}
+
+.scroll-hint.bottom {
+  bottom: 20px;
+  animation-delay: 0.5s;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(-50%) translateY(-10px);
+    opacity: 0.7;
+  }
+}
+
+/* Modal overlay */
+.card-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal card */
+.card-modal {
+  position: relative;
+  width: 90%;
+  max-width: 500px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+  border-radius: 24px;
+  padding: 40px;
+  border: 1px solid var(--border-color);
+  animation: modalSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Close button - matching Framer style */
+.card-modal-close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 1000;
+  color: white;
+  backdrop-filter: blur(30px);
+  transition: background 0.2s, transform 0.2s;
+}
+
+.card-modal-close:hover {
+  background: rgba(255, 77, 77, 0.8);
+  transform: scale(1.1);
+}
+
+/* Vinyl display in modal */
+.card-modal-vinyl {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 32px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    inset 0 0 60px rgba(0, 0, 0, 0.3);
+}
+
+.card-modal-disc {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  background: #0a0a0a;
+  border-radius: 50%;
+  animation: spin 4s linear infinite;
+  box-shadow:
+    0 0 0 4px rgba(255, 255, 255, 0.1),
+    0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.card-modal-grooves {
+  position: absolute;
+  inset: 15px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent 0px,
+    transparent 2px,
+    rgba(40, 40, 40, 0.5) 2px,
+    rgba(40, 40, 40, 0.5) 3px
+  );
+}
+
+.card-modal-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.card-modal-hole {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #0a0a0a;
+  border-radius: 50%;
+}
+
+/* Modal info */
+.card-modal-info {
+  text-align: center;
+}
+
+.card-modal-year {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  background: rgba(255, 77, 77, 0.1);
+  padding: 6px 12px;
+  border-radius: 100px;
+  margin-bottom: 16px;
+}
+
+.card-modal-title {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+.card-modal-artist {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+/* Modal actions */
+.card-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.card-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.card-modal-btn.primary {
+  background: var(--accent);
+  color: white;
+}
+
+.card-modal-btn.primary:hover {
+  background: #ff6666;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 77, 77, 0.4);
+}
+
+.card-modal-btn.primary svg {
+  width: 14px;
+  height: 14px;
+}
+
+.card-modal-btn.secondary {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.card-modal-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .vinyl-card-scroll-section {
+    padding: 60px 0;
+  }
+
+  .vinyl-scroll-header {
+    padding: 0 20px;
+  }
+
+  .vinyl-card-scroll-container {
+    height: 500px;
+  }
+
+  .card-modal {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+
+  .card-modal-close {
+    top: -12px;
+    right: -12px;
+  }
+
+  .card-modal-vinyl {
+    width: 160px;
+    height: 160px;
+  }
+
+  .card-modal-disc {
+    width: 110px;
+    height: 110px;
+  }
+
+  .card-modal-title {
+    font-size: 24px;
+  }
+
+  .card-modal-actions {
+    flex-direction: column;
+  }
+
+  .card-modal-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
