@@ -4,107 +4,193 @@ import { TextureLoader } from 'three'
 import * as THREE from 'three'
 import './CardStack3D.css'
 
-// Album covers
+// Rock album covers (music-themed imagery)
 const albums = [
-  { id: 1, cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&h=400&fit=crop', color: '#ff4d4d' },
-  { id: 2, cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop', color: '#4d4dff' },
-  { id: 3, cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&h=400&fit=crop', color: '#ffd700' },
-  { id: 4, cover: 'https://images.unsplash.com/photo-1571330735066-03aaa9429d89?w=400&h=400&fit=crop', color: '#ff00ff' },
-  { id: 5, cover: 'https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=400&h=400&fit=crop', color: '#00bfff' },
-  { id: 6, cover: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400&h=400&fit=crop', color: '#8b008b' },
-  { id: 7, cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop', color: '#ff6b6b' },
-  { id: 8, cover: 'https://images.unsplash.com/photo-1446057032654-9d8885db76c6?w=400&h=400&fit=crop', color: '#00ff88' },
-  { id: 9, cover: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=400&h=400&fit=crop', color: '#ff8800' },
-  { id: 10, cover: 'https://images.unsplash.com/photo-1598387993441-a364f854c3e1?w=400&h=400&fit=crop', color: '#8844ff' },
+  { id: 1, cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=512&h=512&fit=crop' }, // Electric guitar
+  { id: 2, cover: 'https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=512&h=512&fit=crop' }, // Rock concert
+  { id: 3, cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=512&h=512&fit=crop' }, // Concert lights
+  { id: 4, cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=512&h=512&fit=crop' }, // Guitarist
+  { id: 5, cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=512&h=512&fit=crop' }, // Concert crowd
+  { id: 6, cover: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=512&h=512&fit=crop' }, // Stage lights
+  { id: 7, cover: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=512&h=512&fit=crop' }, // Concert
+  { id: 8, cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=512&h=512&fit=crop' }, // Music vibes
+  { id: 9, cover: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=512&h=512&fit=crop' }, // Festival
+  { id: 10, cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=512&h=512&fit=crop' }, // DJ/Music
 ]
+
+// Create vinyl disc texture
+const createVinylTexture = () => {
+  const canvas = document.createElement('canvas')
+  canvas.width = 512
+  canvas.height = 512
+  const ctx = canvas.getContext('2d')!
+
+  // Black vinyl
+  ctx.fillStyle = '#0a0a0a'
+  ctx.beginPath()
+  ctx.arc(256, 256, 256, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Grooves
+  for (let r = 60; r < 240; r += 3) {
+    ctx.beginPath()
+    ctx.arc(256, 256, r, 0, Math.PI * 2)
+    ctx.strokeStyle = `rgba(30, 30, 30, ${0.3 + Math.random() * 0.3})`
+    ctx.lineWidth = 1
+    ctx.stroke()
+  }
+
+  // Shine highlight
+  const gradient = ctx.createLinearGradient(100, 100, 400, 400)
+  gradient.addColorStop(0, 'rgba(255,255,255,0.1)')
+  gradient.addColorStop(0.5, 'rgba(255,255,255,0)')
+  gradient.addColorStop(1, 'rgba(255,255,255,0.05)')
+  ctx.fillStyle = gradient
+  ctx.beginPath()
+  ctx.arc(256, 256, 250, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Center label
+  ctx.beginPath()
+  ctx.arc(256, 256, 50, 0, Math.PI * 2)
+  ctx.fillStyle = '#ff4d4d'
+  ctx.fill()
+
+  // Center hole
+  ctx.beginPath()
+  ctx.arc(256, 256, 8, 0, Math.PI * 2)
+  ctx.fillStyle = '#000'
+  ctx.fill()
+
+  const texture = new THREE.CanvasTexture(canvas)
+  return texture
+}
 
 interface CardProps {
   index: number
   scrollY: number
   cover: string
   totalCards: number
+  vinylTexture: THREE.Texture
 }
 
-// Single Card in the stack
-const StackCard = ({ index, scrollY, cover, totalCards }: CardProps) => {
-  const meshRef = useRef<THREE.Mesh>(null)
-  const texture = useLoader(TextureLoader, cover)
+// Vinyl record with sleeve
+const VinylCard = ({ index, scrollY, cover, totalCards, vinylTexture }: CardProps) => {
+  const groupRef = useRef<THREE.Group>(null)
+  const vinylRef = useRef<THREE.Mesh>(null)
+  const coverTexture = useLoader(TextureLoader, cover)
 
   useFrame(() => {
-    if (!meshRef.current) return
+    if (!groupRef.current) return
 
-    // Calculate position based on scroll
-    const cardSpacing = 0.4
+    const cardSpacing = 0.5
     const baseY = index * cardSpacing
+    const scrollOffset = scrollY * 0.3
 
-    // Scroll offset (continuous)
-    const scrollOffset = scrollY * 0.5
     let y = baseY - scrollOffset
-
-    // Wrap around for infinite scroll
     const totalHeight = totalCards * cardSpacing
-    while (y < -2) y += totalHeight
-    while (y > totalHeight - 2) y -= totalHeight
 
-    // Z depth based on Y position (creates the pyramid)
-    const z = -Math.abs(y) * 0.8 - 1
+    // Infinite wrap
+    while (y < -3) y += totalHeight
+    while (y > totalHeight - 3) y -= totalHeight
 
-    // X spread based on Y (wider at bottom)
-    const spreadFactor = Math.max(0, y + 1) * 0.15
+    // Pyramid depth - closer cards are in front
+    const normalizedY = y / 3
+    const z = -Math.pow(Math.abs(normalizedY), 1.5) * 2
 
-    // Rotation tilt
-    const rotX = 0.5 // tilt forward
-    const rotZ = spreadFactor * 0.1
+    // X spread - slight fan effect
+    const x = normalizedY * 0.3
 
-    meshRef.current.position.set(0, y, z)
-    meshRef.current.rotation.set(rotX, 0, rotZ)
+    // Rotation - tilt back
+    const rotX = 0.6
+    const rotY = normalizedY * 0.1
+
+    groupRef.current.position.set(x, y * 0.8, z)
+    groupRef.current.rotation.set(rotX, rotY, 0)
 
     // Scale based on depth
-    const scale = THREE.MathUtils.mapLinear(z, -5, 0, 0.6, 1.2)
-    meshRef.current.scale.setScalar(Math.max(0.3, scale))
+    const scale = THREE.MathUtils.mapLinear(z, -4, 0, 0.5, 1.1)
+    groupRef.current.scale.setScalar(Math.max(0.3, scale))
 
-    // Opacity based on position
-    const material = meshRef.current.material as THREE.MeshStandardMaterial
-    const opacity = THREE.MathUtils.clamp(1 - Math.abs(y) * 0.15, 0.2, 1)
-    material.opacity = opacity
+    // Vinyl rotation (spinning effect for front cards)
+    if (vinylRef.current && Math.abs(y) < 1) {
+      vinylRef.current.rotation.z += 0.01 * (1 - Math.abs(normalizedY))
+    }
+
+    // Opacity
+    const opacity = THREE.MathUtils.clamp(1 - Math.abs(normalizedY) * 0.4, 0.1, 1)
+    groupRef.current.children.forEach(child => {
+      if ((child as THREE.Mesh).material) {
+        const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial
+        if (mat.opacity !== undefined) mat.opacity = opacity
+      }
+    })
   })
 
   return (
-    <mesh ref={meshRef}>
-      <planeGeometry args={[1.6, 1.6]} />
-      <meshStandardMaterial
-        map={texture}
-        transparent
-        side={THREE.DoubleSide}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      {/* Album cover sleeve */}
+      <mesh position={[0, 0, 0.02]}>
+        <planeGeometry args={[1.8, 1.8]} />
+        <meshStandardMaterial
+          map={coverTexture}
+          transparent
+          roughness={0.4}
+          metalness={0.1}
+        />
+      </mesh>
+
+      {/* Vinyl disc peeking out */}
+      <mesh ref={vinylRef} position={[0.3, 0, 0]} rotation={[0, 0, 0]}>
+        <circleGeometry args={[0.75, 64]} />
+        <meshStandardMaterial
+          map={vinylTexture}
+          transparent
+          roughness={0.2}
+          metalness={0.8}
+        />
+      </mesh>
+
+      {/* Sleeve edge shadow */}
+      <mesh position={[0, 0, 0.01]}>
+        <planeGeometry args={[1.82, 1.82]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.3} />
+      </mesh>
+    </group>
   )
 }
 
 // Scene
 const StackScene = ({ scrollY }: { scrollY: number }) => {
   const { camera } = useThree()
+  const vinylTexture = useRef(createVinylTexture())
 
   useEffect(() => {
-    // Camera looking down at the stack
-    camera.position.set(0, 3, 4)
-    camera.lookAt(0, 0, -2)
+    camera.position.set(0, 2, 5)
+    camera.lookAt(0, 0, -1)
   }, [camera])
 
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 10, 5]} intensity={1} />
-      <pointLight position={[-5, 5, 5]} intensity={0.5} color="#ff4d4d" />
-      <pointLight position={[5, 5, 5]} intensity={0.5} color="#4d4dff" />
+      <ambientLight intensity={0.4} />
+      <spotLight
+        position={[0, 10, 8]}
+        angle={0.4}
+        penumbra={1}
+        intensity={1.5}
+        castShadow
+      />
+      <pointLight position={[-3, 3, 3]} intensity={0.3} color="#ff4d4d" />
+      <pointLight position={[3, 3, 3]} intensity={0.3} color="#4d4dff" />
 
       {albums.map((album, index) => (
-        <StackCard
+        <VinylCard
           key={album.id}
           index={index}
           scrollY={scrollY}
           cover={album.cover}
           totalCards={albums.length}
+          vinylTexture={vinylTexture.current}
         />
       ))}
     </>
@@ -114,44 +200,54 @@ const StackScene = ({ scrollY }: { scrollY: number }) => {
 // Main Component
 const CardStack3D = () => {
   const [scrollY, setScrollY] = useState(0)
-  const containerRef = useRef<HTMLDivElement>(null)
-  const animationRef = useRef<number | null>(null)
+  const scrollRef = useRef(0)
+  const targetRef = useRef(0)
   const velocityRef = useRef(0)
-  const targetScrollRef = useRef(0)
   const isDragging = useRef(false)
   const lastY = useRef(0)
+  const lastTime = useRef(Date.now())
 
-  // Smooth animation loop
+  // Smooth animation with better easing
   useEffect(() => {
+    let animationId: number
+
     const animate = () => {
-      // Apply velocity with friction
+      const now = Date.now()
+      const delta = Math.min((now - lastTime.current) / 16, 2)
+      lastTime.current = now
+
       if (!isDragging.current) {
-        velocityRef.current *= 0.95
-        targetScrollRef.current += velocityRef.current
+        // Apply momentum with smooth deceleration
+        velocityRef.current *= 0.92
+        targetRef.current += velocityRef.current * delta
+
+        // Stop when very slow
+        if (Math.abs(velocityRef.current) < 0.0001) {
+          velocityRef.current = 0
+        }
       }
 
-      // Smooth interpolation
-      setScrollY(prev => {
-        const diff = targetScrollRef.current - prev
-        return prev + diff * 0.1
-      })
+      // Smooth interpolation (lerp)
+      const diff = targetRef.current - scrollRef.current
+      scrollRef.current += diff * 0.12 * delta
 
-      animationRef.current = requestAnimationFrame(animate)
+      setScrollY(scrollRef.current)
+      animationId = requestAnimationFrame(animate)
     }
 
     animate()
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current)
-    }
+    return () => cancelAnimationFrame(animationId)
   }, [])
 
-  // Wheel handler
+  // Wheel with better sensitivity
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault()
-    velocityRef.current += e.deltaY * 0.002
+    const delta = e.deltaY * 0.001
+    velocityRef.current += delta
+    targetRef.current += delta * 0.5
   }
 
-  // Pointer handlers
+  // Touch/mouse drag
   const handlePointerDown = (e: React.PointerEvent) => {
     isDragging.current = true
     lastY.current = e.clientY
@@ -160,9 +256,10 @@ const CardStack3D = () => {
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current) return
-    const deltaY = e.clientY - lastY.current
-    targetScrollRef.current -= deltaY * 0.01
-    velocityRef.current = -deltaY * 0.005
+
+    const deltaY = (lastY.current - e.clientY) * 0.008
+    targetRef.current += deltaY
+    velocityRef.current = deltaY * 0.5
     lastY.current = e.clientY
   }
 
@@ -172,7 +269,6 @@ const CardStack3D = () => {
 
   return (
     <div
-      ref={containerRef}
       className="card-stack-container"
       onWheel={handleWheel}
       onPointerDown={handlePointerDown}
@@ -181,19 +277,20 @@ const CardStack3D = () => {
       onPointerLeave={handlePointerUp}
     >
       <Canvas
-        camera={{ fov: 50, position: [0, 3, 4] }}
+        camera={{ fov: 45, position: [0, 2, 5] }}
         gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
       >
+        <color attach="background" args={['#000000']} />
+        <fog attach="fog" args={['#000000', 3, 10]} />
         <Suspense fallback={null}>
           <StackScene scrollY={scrollY} />
         </Suspense>
       </Canvas>
 
-      {/* Gradient overlays */}
       <div className="stack-gradient-top" />
       <div className="stack-gradient-bottom" />
 
-      {/* Scroll hint */}
       <div className="stack-scroll-hint">
         <span>Scroll to explore</span>
         <div className="scroll-icon">
