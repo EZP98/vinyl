@@ -1,5 +1,4 @@
 .bundle-section {
-  position: relative;
   width: 100%;
   min-height: 100vh;
   background: #0a0a0a;
@@ -7,23 +6,9 @@
   align-items: center;
   justify-content: center;
   padding: 80px 40px;
-  overflow: hidden;
-}
-
-/* WebGL Particles Background */
-.particles-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
 }
 
 .bundle-container {
-  position: relative;
-  z-index: 1;
   max-width: 1200px;
   width: 100%;
   display: flex;
