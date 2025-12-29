@@ -4,193 +4,211 @@ import { TextureLoader } from 'three'
 import * as THREE from 'three'
 import './CardStack3D.css'
 
-// Rock album covers (music-themed imagery)
+// Album covers - rock classics
 const albums = [
-  { id: 1, cover: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?w=512&h=512&fit=crop' }, // Electric guitar
-  { id: 2, cover: 'https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=512&h=512&fit=crop' }, // Rock concert
-  { id: 3, cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=512&h=512&fit=crop' }, // Concert lights
-  { id: 4, cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=512&h=512&fit=crop' }, // Guitarist
-  { id: 5, cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=512&h=512&fit=crop' }, // Concert crowd
-  { id: 6, cover: 'https://images.unsplash.com/photo-1501612780327-45045538702b?w=512&h=512&fit=crop' }, // Stage lights
-  { id: 7, cover: 'https://images.unsplash.com/photo-1524368535928-5b5e00ddc76b?w=512&h=512&fit=crop' }, // Concert
-  { id: 8, cover: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=512&h=512&fit=crop' }, // Music vibes
-  { id: 9, cover: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=512&h=512&fit=crop' }, // Festival
-  { id: 10, cover: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=512&h=512&fit=crop' }, // DJ/Music
+  { id: 1, cover: '/albums/abbey-road.jpg', spineColor: '#2a2a2a' },
+  { id: 2, cover: '/albums/paranoid.jpg', spineColor: '#1a1a1a' },
+  { id: 3, cover: '/albums/ramones.jpg', spineColor: '#1a1a3a' },
+  { id: 4, cover: '/albums/morning-glory.jpg', spineColor: '#3a2a1a' },
+  { id: 5, cover: '/albums/offspring.jpg', spineColor: '#3a1a1a' },
+  { id: 6, cover: '/albums/black-sabbath-due.jpg', spineColor: '#1a3a2a' },
 ]
 
-// Create vinyl disc texture
-const createVinylTexture = () => {
-  const canvas = document.createElement('canvas')
-  canvas.width = 512
-  canvas.height = 512
-  const ctx = canvas.getContext('2d')!
-
-  // Black vinyl
-  ctx.fillStyle = '#0a0a0a'
-  ctx.beginPath()
-  ctx.arc(256, 256, 256, 0, Math.PI * 2)
-  ctx.fill()
-
-  // Grooves
-  for (let r = 60; r < 240; r += 3) {
-    ctx.beginPath()
-    ctx.arc(256, 256, r, 0, Math.PI * 2)
-    ctx.strokeStyle = `rgba(30, 30, 30, ${0.3 + Math.random() * 0.3})`
-    ctx.lineWidth = 1
-    ctx.stroke()
-  }
-
-  // Shine highlight
-  const gradient = ctx.createLinearGradient(100, 100, 400, 400)
-  gradient.addColorStop(0, 'rgba(255,255,255,0.1)')
-  gradient.addColorStop(0.5, 'rgba(255,255,255,0)')
-  gradient.addColorStop(1, 'rgba(255,255,255,0.05)')
-  ctx.fillStyle = gradient
-  ctx.beginPath()
-  ctx.arc(256, 256, 250, 0, Math.PI * 2)
-  ctx.fill()
-
-  // Center label
-  ctx.beginPath()
-  ctx.arc(256, 256, 50, 0, Math.PI * 2)
-  ctx.fillStyle = '#ff4d4d'
-  ctx.fill()
-
-  // Center hole
-  ctx.beginPath()
-  ctx.arc(256, 256, 8, 0, Math.PI * 2)
-  ctx.fillStyle = '#000'
-  ctx.fill()
-
-  const texture = new THREE.CanvasTexture(canvas)
-  return texture
-}
-
-interface CardProps {
+interface VinylBoxProps {
   index: number
-  scrollY: number
+  scrollX: number
   cover: string
+  spineColor: string
   totalCards: number
-  vinylTexture: THREE.Texture
+  isHovered: boolean
+  onHover: (hover: boolean) => void
 }
 
-// Vinyl record with sleeve
-const VinylCard = ({ index, scrollY, cover, totalCards, vinylTexture }: CardProps) => {
+// Single Vinyl Box - proper 3D geometry
+const VinylBox = ({ index, scrollX, cover, spineColor, totalCards, isHovered, onHover }: VinylBoxProps) => {
   const groupRef = useRef<THREE.Group>(null)
-  const vinylRef = useRef<THREE.Mesh>(null)
+  const boxRef = useRef<THREE.Group>(null)
+  const hoverProgress = useRef(0)
+
   const coverTexture = useLoader(TextureLoader, cover)
+
+  // Box dimensions - realistic vinyl sleeve
+  // A vinyl is ~31cm (12") square, spine ~3-5mm thick
+  // Scale: 1.6 units = 31cm, so 5mm = ~0.026 units
+  const W = 0.04  // Width (spine thickness) - realistic!
+  const H = 1.6   // Height
+  const D = 1.6   // Depth (cover size, square)
 
   useFrame(() => {
     if (!groupRef.current) return
 
-    const cardSpacing = 0.5
-    const baseY = index * cardSpacing
-    const scrollOffset = scrollY * 0.3
+    const cardSpacing = 0.25
+    const baseX = index * cardSpacing
+    const scrollOffset = scrollX * 0.05
 
-    let y = baseY - scrollOffset
-    const totalHeight = totalCards * cardSpacing
+    let x = baseX - scrollOffset
+    const totalWidth = totalCards * cardSpacing
 
     // Infinite wrap
-    while (y < -3) y += totalHeight
-    while (y > totalHeight - 3) y -= totalHeight
+    while (x < -totalWidth / 2) x += totalWidth
+    while (x > totalWidth / 2) x -= totalWidth
 
-    // Pyramid depth - closer cards are in front
-    const normalizedY = y / 3
-    const z = -Math.pow(Math.abs(normalizedY), 1.5) * 2
+    // Position boxes in a row
+    groupRef.current.position.set(x * 6, 0, 0)
 
-    // X spread - slight fan effect
-    const x = normalizedY * 0.3
+    // Hover animation - tilt to show more cover
+    const targetHover = isHovered ? 1 : 0
+    hoverProgress.current += (targetHover - hoverProgress.current) * 0.08
 
-    // Rotation - tilt back
-    const rotX = 0.6
-    const rotY = normalizedY * 0.1
-
-    groupRef.current.position.set(x, y * 0.8, z)
-    groupRef.current.rotation.set(rotX, rotY, 0)
-
-    // Scale based on depth
-    const scale = THREE.MathUtils.mapLinear(z, -4, 0, 0.5, 1.1)
-    groupRef.current.scale.setScalar(Math.max(0.3, scale))
-
-    // Vinyl rotation (spinning effect for front cards)
-    if (vinylRef.current && Math.abs(y) < 1) {
-      vinylRef.current.rotation.z += 0.01 * (1 - Math.abs(normalizedY))
+    if (boxRef.current) {
+      // Base rotation + hover tilt
+      boxRef.current.rotation.x = -0.65
+      boxRef.current.rotation.y = -0.7 + hoverProgress.current * 0.35
     }
 
-    // Opacity
-    const opacity = THREE.MathUtils.clamp(1 - Math.abs(normalizedY) * 0.4, 0.1, 1)
-    groupRef.current.children.forEach(child => {
-      if ((child as THREE.Mesh).material) {
-        const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial
-        if (mat.opacity !== undefined) mat.opacity = opacity
-      }
-    })
+    // NO scaling or fading - boxes stay full size and visible
+    groupRef.current.scale.setScalar(1)
   })
 
   return (
-    <group ref={groupRef}>
-      {/* Album cover sleeve */}
-      <mesh position={[0, 0, 0.02]}>
-        <planeGeometry args={[1.8, 1.8]} />
-        <meshStandardMaterial
-          map={coverTexture}
-          transparent
-          roughness={0.4}
-          metalness={0.1}
-        />
-      </mesh>
+    <group
+      ref={groupRef}
+      onPointerOver={(e) => { e.stopPropagation(); onHover(true) }}
+      onPointerOut={() => onHover(false)}
+    >
+      {/* Box container - all faces inside here rotate together */}
+      <group ref={boxRef}>
 
-      {/* Vinyl disc peeking out */}
-      <mesh ref={vinylRef} position={[0.3, 0, 0]} rotation={[0, 0, 0]}>
-        <circleGeometry args={[0.75, 64]} />
-        <meshStandardMaterial
-          map={vinylTexture}
-          transparent
-          roughness={0.2}
-          metalness={0.8}
-        />
-      </mesh>
+        {/* ===== FRONT FACE (SPINE) ===== */}
+        {/* Position: Z = +D/2 (front of the box) */}
+        <mesh position={[0, 0, D / 2]}>
+          <planeGeometry args={[W, H]} />
+          <meshStandardMaterial
+            color={spineColor}
+            roughness={0.3}
+            metalness={0.1}
+          />
+        </mesh>
 
-      {/* Sleeve edge shadow */}
-      <mesh position={[0, 0, 0.01]}>
-        <planeGeometry args={[1.82, 1.82]} />
-        <meshBasicMaterial color="#000000" transparent opacity={0.3} />
-      </mesh>
+        {/* ===== RIGHT FACE (COVER with album art) ===== */}
+        {/* Position: X = +W/2, rotated 90° to face right */}
+        {/* This face connects to the right edge of the spine */}
+        <mesh position={[W / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <planeGeometry args={[D, H]} />
+          <meshStandardMaterial
+            map={coverTexture}
+            roughness={0.2}
+            metalness={0.05}
+          />
+        </mesh>
+
+        {/* Cover glossy overlay */}
+        <mesh position={[W / 2 + 0.002, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+          <planeGeometry args={[D, H]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            transparent
+            opacity={0.04}
+          />
+        </mesh>
+
+        {/* ===== TOP FACE ===== */}
+        {/* Position: Y = +H/2, rotated to face up */}
+        <mesh position={[0, H / 2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[W, D]} />
+          <meshStandardMaterial
+            color={spineColor}
+            roughness={0.4}
+          />
+        </mesh>
+
+        {/* Top edge highlight */}
+        <mesh position={[0, H / 2 + 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[W * 0.2, D]} />
+          <meshStandardMaterial
+            color="#ffffff"
+            transparent
+            opacity={0.12}
+          />
+        </mesh>
+
+        {/* ===== BACK FACE ===== */}
+        {/* Position: Z = -D/2, rotated 180° to face back */}
+        <mesh position={[0, 0, -D / 2]} rotation={[0, Math.PI, 0]}>
+          <planeGeometry args={[W, H]} />
+          <meshStandardMaterial
+            color="#0a0a0a"
+            roughness={0.9}
+          />
+        </mesh>
+
+        {/* ===== LEFT FACE (back of cover) ===== */}
+        {/* Position: X = -W/2, rotated -90° to face left */}
+        <mesh position={[-W / 2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+          <planeGeometry args={[D, H]} />
+          <meshStandardMaterial
+            color="#111111"
+            roughness={0.8}
+          />
+        </mesh>
+
+        {/* ===== BOTTOM FACE ===== */}
+        {/* Position: Y = -H/2, rotated to face down */}
+        <mesh position={[0, -H / 2, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[W, D]} />
+          <meshStandardMaterial
+            color={spineColor}
+            roughness={0.5}
+          />
+        </mesh>
+
+      </group>
     </group>
   )
 }
 
 // Scene
-const StackScene = ({ scrollY }: { scrollY: number }) => {
+const ShelfScene = ({ scrollX, hoveredId, setHoveredId }: {
+  scrollX: number
+  hoveredId: number | null
+  setHoveredId: (id: number | null) => void
+}) => {
   const { camera } = useThree()
-  const vinylTexture = useRef(createVinylTexture())
 
   useEffect(() => {
-    camera.position.set(0, 2, 5)
-    camera.lookAt(0, 0, -1)
+    camera.position.set(0, 2, 7)
+    camera.lookAt(0, 0, 0)
   }, [camera])
 
   return (
     <>
-      <ambientLight intensity={0.4} />
+      {/* Lighting */}
+      <ambientLight intensity={0.9} />
+
       <spotLight
-        position={[0, 10, 8]}
-        angle={0.4}
+        position={[0, 10, 10]}
+        angle={0.5}
         penumbra={1}
         intensity={1.5}
         castShadow
       />
-      <pointLight position={[-3, 3, 3]} intensity={0.3} color="#ff4d4d" />
-      <pointLight position={[3, 3, 3]} intensity={0.3} color="#4d4dff" />
+
+      <directionalLight position={[10, 5, 5]} intensity={0.7} />
+      <directionalLight position={[-10, 5, 5]} intensity={0.5} />
+
+      <pointLight position={[-8, 2, 5]} intensity={0.4} color="#ff6b6b" />
+      <pointLight position={[8, 2, 5]} intensity={0.4} color="#6b6bff" />
 
       {albums.map((album, index) => (
-        <VinylCard
+        <VinylBox
           key={album.id}
           index={index}
-          scrollY={scrollY}
+          scrollX={scrollX}
           cover={album.cover}
+          spineColor={album.spineColor}
           totalCards={albums.length}
-          vinylTexture={vinylTexture.current}
+          isHovered={hoveredId === album.id}
+          onHover={(hover) => setHoveredId(hover ? album.id : null)}
         />
       ))}
     </>
@@ -199,15 +217,16 @@ const StackScene = ({ scrollY }: { scrollY: number }) => {
 
 // Main Component
 const CardStack3D = () => {
-  const [scrollY, setScrollY] = useState(0)
+  const [scrollX, setScrollX] = useState(0)
+  const [hoveredId, setHoveredId] = useState<number | null>(null)
   const scrollRef = useRef(0)
   const targetRef = useRef(0)
   const velocityRef = useRef(0)
   const isDragging = useRef(false)
-  const lastY = useRef(0)
+  const lastX = useRef(0)
   const lastTime = useRef(Date.now())
 
-  // Smooth animation with better easing
+  // Smooth animation loop
   useEffect(() => {
     let animationId: number
 
@@ -217,21 +236,18 @@ const CardStack3D = () => {
       lastTime.current = now
 
       if (!isDragging.current) {
-        // Apply momentum with smooth deceleration
         velocityRef.current *= 0.92
         targetRef.current += velocityRef.current * delta
 
-        // Stop when very slow
-        if (Math.abs(velocityRef.current) < 0.0001) {
+        if (Math.abs(velocityRef.current) < 0.00005) {
           velocityRef.current = 0
         }
       }
 
-      // Smooth interpolation (lerp)
       const diff = targetRef.current - scrollRef.current
-      scrollRef.current += diff * 0.12 * delta
+      scrollRef.current += diff * 0.05 * delta
 
-      setScrollY(scrollRef.current)
+      setScrollX(scrollRef.current)
       animationId = requestAnimationFrame(animate)
     }
 
@@ -239,28 +255,28 @@ const CardStack3D = () => {
     return () => cancelAnimationFrame(animationId)
   }, [])
 
-  // Wheel with better sensitivity
+  // Mouse wheel
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault()
-    const delta = e.deltaY * 0.001
+    const delta = (e.deltaY || e.deltaX) * 0.0003
     velocityRef.current += delta
-    targetRef.current += delta * 0.5
+    targetRef.current += delta
   }
 
-  // Touch/mouse drag
+  // Drag handlers
   const handlePointerDown = (e: React.PointerEvent) => {
     isDragging.current = true
-    lastY.current = e.clientY
+    lastX.current = e.clientX
     velocityRef.current = 0
   }
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current) return
 
-    const deltaY = (lastY.current - e.clientY) * 0.008
-    targetRef.current += deltaY
-    velocityRef.current = deltaY * 0.5
-    lastY.current = e.clientY
+    const deltaX = (lastX.current - e.clientX) * 0.0015
+    targetRef.current += deltaX
+    velocityRef.current = deltaX * 0.3
+    lastX.current = e.clientX
   }
 
   const handlePointerUp = () => {
@@ -277,27 +293,25 @@ const CardStack3D = () => {
       onPointerLeave={handlePointerUp}
     >
       <Canvas
-        camera={{ fov: 45, position: [0, 2, 5] }}
+        camera={{ fov: 45, position: [0, 2, 7] }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]}
       >
-        <color attach="background" args={['#000000']} />
-        <fog attach="fog" args={['#000000', 3, 10]} />
+        <color attach="background" args={['#0a0a0a']} />
         <Suspense fallback={null}>
-          <StackScene scrollY={scrollY} />
+          <ShelfScene
+            scrollX={scrollX}
+            hoveredId={hoveredId}
+            setHoveredId={setHoveredId}
+          />
         </Suspense>
       </Canvas>
 
-      <div className="stack-gradient-top" />
-      <div className="stack-gradient-bottom" />
+      <div className="stack-gradient-left" />
+      <div className="stack-gradient-right" />
 
       <div className="stack-scroll-hint">
-        <span>Scroll to explore</span>
-        <div className="scroll-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </div>
+        <span>Scroll or drag to browse</span>
       </div>
     </div>
   )
