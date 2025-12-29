@@ -1,7 +1,6 @@
 import { Suspense } from 'react'
 import Header from './components/Header'
 import CardStack3D from './components/CardStack3D'
-import BundleSection from './components/BundleSection'
 import './App.css'
 
 function App() {
@@ -13,9 +12,6 @@ function App() {
       <Suspense fallback={<div className="loading">Loading...</div>}>
         <CardStack3D />
       </Suspense>
-
-      {/* Bundle Section */}
-      <BundleSection />
 
       {/* Footer */}
       <footer className="footer">
