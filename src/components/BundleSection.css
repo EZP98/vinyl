@@ -1,31 +1,27 @@
-/* Press Section - Stripe Press inspired */
-.press-section {
+/* Stripe Press inspired styles */
+.PressHomepageProductList__container {
   width: 100%;
   min-height: 100vh;
   background: #000;
-  padding: 120px 60px 80px;
+  padding-top: 80px;
 }
 
-.press-container {
+.PressHomepageProductListHeader {
+  padding: 60px 40px 40px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-/* Header */
-.press-header {
-  margin-bottom: 60px;
-}
-
-.press-name {
+.PressHomepageProductListHeader__name {
   font-family: 'Georgia', serif;
-  font-size: 42px;
+  font-size: 48px;
   font-weight: 400;
   color: #fff;
   margin: 0 0 8px 0;
   letter-spacing: -0.02em;
 }
 
-.press-tagline {
+.PressHomepageSectionTitle {
   font-family: 'Helvetica', sans-serif;
   font-size: 18px;
   font-weight: 400;
@@ -33,57 +29,79 @@
   margin: 0;
 }
 
-/* Album List */
-.press-list {
+/* Product List */
+.PressHomepageProductList {
   display: flex;
   flex-direction: column;
-  gap: 1px;
 }
 
-/* Album Card */
-.album-card {
+/* Book/Album Card */
+.PressHomepageBook {
   display: block;
   width: 100%;
-  padding: 32px 40px;
-  background: var(--bg);
-  color: var(--text);
+  padding: 40px;
+  background-color: var(--backgroundColor);
+  color: var(--color);
   border: none;
   cursor: pointer;
   text-align: left;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
 
-.album-card:hover {
-  transform: translateX(8px);
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
-  z-index: 1;
+.PressHomepageBook:hover {
+  transform: translateX(12px);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
-.album-card-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.PressHomepageBook__text {
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
-.album-card-title {
+.PressHomepageBook__title {
   font-family: 'Georgia', serif;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 400;
-  margin: 0;
+  margin: 0 0 6px 0;
   letter-spacing: -0.01em;
 }
 
-.album-card-artist {
+.PressHomepageBook__author {
   font-family: 'Helvetica', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 400;
   margin: 0;
   opacity: 0.7;
 }
 
-/* Detail Overlay */
+/* Description tooltip */
+.PressHomepageBook__description {
+  position: fixed;
+  bottom: 40px;
+  left: 40px;
+  max-width: 400px;
+  padding: 20px 24px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Detail Modal */
 .detail-overlay {
   position: fixed;
   top: 0;
@@ -99,19 +117,13 @@
   padding: 40px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* Detail Modal */
 .detail-modal {
   width: 100%;
   max-width: 900px;
   max-height: 90vh;
-  overflow-y: auto;
-  background: var(--bg);
-  color: var(--text);
+  overflow: hidden;
+  background-color: var(--backgroundColor);
+  color: var(--color);
   position: relative;
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -129,8 +141,8 @@
 
 .detail-close {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 20px;
+  right: 20px;
   background: none;
   border: none;
   color: inherit;
@@ -150,7 +162,6 @@
   grid-template-columns: 1fr 1fr;
 }
 
-/* Album Cover */
 .detail-cover {
   aspect-ratio: 1;
   overflow: hidden;
@@ -162,20 +173,11 @@
   object-fit: cover;
 }
 
-/* Album Info */
 .detail-info {
   padding: 48px;
   display: flex;
   flex-direction: column;
-}
-
-.detail-year {
-  font-family: 'Helvetica', sans-serif;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.5;
-  margin-bottom: 16px;
+  justify-content: center;
 }
 
 .detail-title {
@@ -198,62 +200,30 @@
   font-family: 'Georgia', serif;
   font-size: 15px;
   line-height: 1.7;
-  margin: 0 0 32px 0;
-  opacity: 0.8;
-}
-
-.detail-tracklist {
-  margin-top: auto;
-}
-
-.detail-tracklist h4 {
-  font-family: 'Helvetica', sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.5;
-  margin: 0 0 16px 0;
-}
-
-.detail-tracklist ol {
-  list-style: none;
-  padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px 24px;
-}
-
-.detail-tracklist li {
-  font-family: 'Helvetica', sans-serif;
-  font-size: 13px;
-  opacity: 0.7;
-  counter-increment: track;
-}
-
-.detail-tracklist li::before {
-  content: counter(track, decimal-leading-zero) " ";
-  opacity: 0.4;
-  font-size: 11px;
+  opacity: 0.85;
 }
 
 /* Responsive */
 @media (max-width: 900px) {
-  .press-section {
-    padding: 100px 40px 60px;
+  .PressHomepageProductListHeader {
+    padding: 40px 24px 32px;
   }
 
-  .press-name {
-    font-size: 32px;
+  .PressHomepageProductListHeader__name {
+    font-size: 36px;
   }
 
-  .album-card {
-    padding: 24px 32px;
+  .PressHomepageBook {
+    padding: 32px 24px;
   }
 
-  .album-card-title {
-    font-size: 20px;
+  .PressHomepageBook__title {
+    font-size: 22px;
+  }
+
+  .PressHomepageBook__author {
+    font-size: 14px;
   }
 
   .detail-content {
@@ -272,42 +242,38 @@
     font-size: 24px;
   }
 
-  .detail-tracklist ol {
-    grid-template-columns: 1fr;
+  .PressHomepageBook__description {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    max-width: none;
   }
 }
 
 @media (max-width: 600px) {
-  .press-section {
-    padding: 80px 20px 40px;
-  }
-
-  .press-header {
-    margin-bottom: 40px;
-  }
-
-  .press-name {
+  .PressHomepageProductListHeader__name {
     font-size: 28px;
   }
 
-  .press-tagline {
+  .PressHomepageSectionTitle {
     font-size: 14px;
   }
 
-  .album-card {
-    padding: 20px 24px;
+  .PressHomepageBook {
+    padding: 24px 20px;
   }
 
-  .album-card-title {
+  .PressHomepageBook__title {
     font-size: 18px;
   }
 
-  .album-card-artist {
-    font-size: 12px;
+  .detail-overlay {
+    padding: 0;
   }
 
-  .detail-overlay {
-    padding: 20px;
+  .detail-modal {
+    max-height: 100vh;
+    height: 100vh;
   }
 
   .detail-info {
@@ -316,9 +282,5 @@
 
   .detail-title {
     font-size: 20px;
-  }
-
-  .detail-description {
-    font-size: 14px;
   }
 }
