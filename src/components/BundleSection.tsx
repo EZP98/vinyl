@@ -15,43 +15,74 @@ const vinyls = [
 
 const BundleSection = () => {
   const containerRef = useRef<HTMLDivElement>(null)
+  const needleRef = useRef<HTMLImageElement>(null)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.utils.toArray<HTMLElement>('.vinyl-viewport').forEach((section) => {
-        const img = section.querySelector('.vinyl-image') as HTMLElement
+      const cards = gsap.utils.toArray<HTMLElement>('.vinyl-card')
 
-        // Entry: scale up and fade in from below
+      // Each vinyl card animates on scroll into view
+      cards.forEach((card, i) => {
+        const img = card.querySelector('.vinyl-image') as HTMLElement
+
+        // Entry effect - Vinyl Spin Drop with 3D perspective
         gsap.fromTo(img,
-          { scale: 0.8, opacity: 0, y: 100 },
+          {
+            scale: 0.2,
+            opacity: 0,
+            rotation: -360 - (i * 90),
+            x: -200,
+            rotateY: -60,
+            filter: 'blur(12px)'
+          },
           {
             scale: 1,
             opacity: 1,
-            y: 0,
-            ease: 'power2.out',
+            rotation: (i % 2 === 0 ? 3 : -3),
+            x: 0,
+            rotateY: 0,
+            filter: 'blur(0px)',
+            ease: 'elastic.out(1, 0.6)',
             scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'top center',
-              scrub: 1,
+              trigger: card,
+              start: 'top 90%',
+              end: 'top 40%',
+              scrub: 1.2,
             }
           }
         )
 
-        // Exit: slide up and fade out
+        // Exit effect - Vinyl Spin Out
         gsap.to(img, {
-          y: -150,
-          scale: 0.9,
+          scale: 0.5,
           opacity: 0,
-          ease: 'power2.in',
+          rotation: 180 + (i * 60),
+          x: 150,
+          rotateY: 45,
+          filter: 'blur(8px)',
+          ease: 'power3.in',
           scrollTrigger: {
-            trigger: section,
-            start: 'bottom center',
-            end: 'bottom top',
-            scrub: 1,
+            trigger: card,
+            start: 'bottom 30%',
+            end: 'bottom -20%',
+            scrub: 1.2,
           }
         })
       })
+
+      // Needle subtle rotation based on scroll progress
+      if (needleRef.current) {
+        gsap.to(needleRef.current, {
+          rotation: 110,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: 2,
+          }
+        })
+      }
     }, containerRef)
 
     return () => ctx.revert()
@@ -59,13 +90,21 @@ const BundleSection = () => {
 
   return (
     <div className="vinyl-showcase" ref={containerRef}>
-      {vinyls.map((vinyl, index) => (
-        <section key={index} className="vinyl-viewport">
-          <div className="vinyl-sticky">
-            <img src={vinyl.src} alt={vinyl.alt} className="vinyl-image" />
-          </div>
-        </section>
-      ))}
+      <img
+        ref={needleRef}
+        src="/needle.png"
+        alt="Turntable needle"
+        className="needle"
+      />
+      <div className="vinyl-track">
+        <div className="vinyl-slider">
+          {vinyls.map((vinyl, index) => (
+            <div key={index} className="vinyl-card">
+              <img src={vinyl.src} alt={vinyl.alt} className="vinyl-image" />
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

@@ -32,18 +32,14 @@ body {
   overflow-y: auto;
 }
 
-/* Scrollbar */
+/* Hide Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--text-secondary);
-  border-radius: 3px;
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 /* Selection */
