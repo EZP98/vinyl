@@ -7,16 +7,16 @@ const Header = () => {
 
       <nav className="nav">
         <a href="#collection" className="nav-link">
-          <span className="nav-text">COLLECTION</span>
-          <span className="nav-text-hover">COLLECTION</span>
+          <span className="nav-text">RECORDS</span>
+          <span className="nav-text-hover">RECORDS</span>
         </a>
         <a href="#about" className="nav-link">
-          <span className="nav-text">ABOUT</span>
-          <span className="nav-text-hover">ABOUT</span>
+          <span className="nav-text">LISTEN</span>
+          <span className="nav-text-hover">LISTEN</span>
         </a>
         <a href="#contact" className="nav-link">
-          <span className="nav-text">CONTACT</span>
-          <span className="nav-text-hover">CONTACT</span>
+          <span className="nav-text">SPIN</span>
+          <span className="nav-text-hover">SPIN</span>
         </a>
       </nav>
     </header>

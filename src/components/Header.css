@@ -28,8 +28,8 @@
 
 .nav-link {
   position: relative;
-  font-family: 'Helvetica', sans-serif;
-  font-size: 13px;
+  font-family: 'Metal Mania', cursive;
+  font-size: 16px;
   font-weight: 400;
   letter-spacing: 0.05em;
   color: #fff;
@@ -69,10 +69,10 @@
   }
 
   .nav-link {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .logo {
-    font-size: 11px;
+    font-size: 18px;
   }
 }
