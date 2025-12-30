@@ -11,6 +11,7 @@ const vinyls = [
   { src: '/vinyl3.png', alt: 'Vinyl 3' },
   { src: '/vinyl4.png', alt: 'Vinyl 4' },
   { src: '/vinyl5.png', alt: 'Vinyl 5' },
+  { src: '/vinyl6.png', alt: 'Vinyl 6' },
 ]
 
 const BundleSection = () => {
