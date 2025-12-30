@@ -21,42 +21,13 @@
   text-decoration: none;
 }
 
-.nav {
-  display: flex;
-  gap: 32px;
-}
-
-.nav-link {
-  position: relative;
+.slogan {
   font-family: 'Metal Mania', cursive;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: #fff;
-  text-decoration: none;
-  overflow: hidden;
-}
-
-.nav-text {
-  display: block;
-  transition: opacity 0.2s ease;
-}
-
-.nav-text-hover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  text-decoration: underline;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.nav-link:hover .nav-text {
-  opacity: 0;
-}
-
-.nav-link:hover .nav-text-hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {
@@ -64,15 +35,11 @@
     padding: 16px 20px;
   }
 
-  .nav {
-    gap: 20px;
-  }
-
-  .nav-link {
-    font-size: 12px;
-  }
-
   .logo {
     font-size: 18px;
+  }
+
+  .slogan {
+    font-size: 14px;
   }
 }

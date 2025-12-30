@@ -11,7 +11,6 @@ const vinyls = [
   { src: '/vinyl3.png', alt: 'Vinyl 3' },
   { src: '/vinyl4.png', alt: 'Vinyl 4' },
   { src: '/vinyl5.png', alt: 'Vinyl 5' },
-  { src: '/vinyl6.png', alt: 'Vinyl 6' },
 ]
 
 const BundleSection = () => {
@@ -57,15 +56,15 @@ const BundleSection = () => {
           }
         })
 
-        // Exit animation - scale down and fade
+        // Exit animation - gentle scale down and fade
         gsap.to(img, {
-          scale: 0.8,
-          opacity: 0.3,
+          scale: 0.85,
+          opacity: 0.4,
           scrollTrigger: {
             trigger: section,
-            start: 'bottom 50%',
-            end: 'bottom top',
-            scrub: 1,
+            start: 'center 30%',
+            end: 'bottom -20%',
+            scrub: 2,
           }
         })
       })
