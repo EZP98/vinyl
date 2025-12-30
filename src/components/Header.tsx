@@ -3,7 +3,7 @@ import './Header.css'
 const Header = () => {
   return (
     <header className="header">
-      <a href="/" className="logo">VINILE</a>
+      <a href="/" className="logo">VINYL</a>
 
       <nav className="nav">
         <a href="#collection" className="nav-link">
