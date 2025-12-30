@@ -1,235 +1,86 @@
-.bundle-section {
+/* Press Section - Stripe Press inspired */
+.press-section {
   width: 100%;
   min-height: 100vh;
-  background: #000000;
-  padding: 80px 60px;
+  background: #000;
+  padding: 120px 60px 80px;
 }
 
-.bundle-container {
-  max-width: 1100px;
-  width: 100%;
+.press-container {
+  max-width: 1200px;
   margin: 0 auto;
 }
 
 /* Header */
-.grid-header {
-  text-align: center;
-  margin-bottom: 50px;
+.press-header {
+  margin-bottom: 60px;
 }
 
-.grid-title {
-  font-family: 'Helvetica', sans-serif;
-  font-size: 13px;
+.press-name {
+  font-family: 'Georgia', serif;
+  font-size: 42px;
   font-weight: 400;
-  letter-spacing: 0.05em;
   color: #fff;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.press-tagline {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
   margin: 0;
 }
 
-.grid-subtitle {
-  display: none;
-}
-
-/* Vinyl Grid */
-.vinyl-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px 20px;
-}
-
-/* Legacy - remove */
-.bundle-products {
-  display: none;
-}
-
-.product-wrapper {
-  display: none;
-}
-
-/* Single vinyl product */
-.vinyl-product {
+/* Album List */
+.press-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
+  gap: 1px;
+}
+
+/* Album Card */
+.album-card {
+  display: block;
+  width: 100%;
+  padding: 32px 40px;
+  background: var(--bg);
+  color: var(--text);
+  border: none;
   cursor: pointer;
-  width: 100%;
-}
-
-.vinyl-product-inner {
+  text-align: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 320px;
 }
 
-/* Vinyl disc */
-.vinyl-disc {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 95%;
-  height: 95%;
-  border-radius: 50%;
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+.album-card:hover {
+  transform: translateX(8px);
+  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
 
-.vinyl-disc.slide-out {
-  transform: translate(-20%, -50%);
-}
-
-.vinyl-disc img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.5));
-}
-
-/* Album cover */
-.album-cover {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
-  box-shadow: 8px 8px 24px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease;
-}
-
-.vinyl-product:hover .album-cover {
-  transform: translateX(10px);
-}
-
-.album-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Product label */
-.product-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-}
-
-/* Plus icon */
-.plus-icon {
-  color: rgba(255, 255, 255, 0.3);
-  flex-shrink: 0;
-}
-
-/* Bundle info */
-.bundle-info {
+.album-card-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  text-align: center;
+  gap: 4px;
 }
 
-.bundle-title {
-  font-family: 'Eurostile', 'Helvetica Neue', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
+.album-card-title {
+  font-family: 'Georgia', serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
   letter-spacing: -0.01em;
-  color: #e3e3e3;
+}
+
+.album-card-artist {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   margin: 0;
-}
-
-.bundle-subtitle {
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0;
-  max-width: 500px;
-}
-
-.bundle-cta {
-  margin-top: 16px;
-  padding: 14px 32px;
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.6);
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.bundle-cta:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .bundle-section {
-    padding: 80px 40px;
-  }
-
-  .vinyl-grid {
-    gap: 20px 16px;
-  }
-}
-
-@media (max-width: 768px) {
-  .bundle-section {
-    padding: 70px 20px;
-  }
-
-  .vinyl-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px 12px;
-  }
-
-  .product-label {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .vinyl-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px 8px;
-  }
-}
-
-/* Spin animation on click */
-.vinyl-disc.spin-out {
-  animation: spinOut 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes spinOut {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-100%, -50%) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-.vinyl-product.spinning .album-cover {
-  animation: scaleUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes scaleUp {
-  0% {
-    transform: scale(1);
-  }
-  100% {
-    transform: scale(1.05);
-    opacity: 0;
-  }
+  opacity: 0.7;
 }
 
 /* Detail Overlay */
@@ -239,12 +90,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
+  background: rgba(0, 0, 0, 0.9);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.3s ease;
+  padding: 40px;
 }
 
 @keyframes fadeIn {
@@ -252,10 +104,14 @@
   to { opacity: 1; }
 }
 
+/* Detail Modal */
 .detail-modal {
-  width: 90%;
-  max-width: 1000px;
+  width: 100%;
+  max-width: 900px;
   max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--text);
   position: relative;
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -273,212 +129,196 @@
 
 .detail-close {
   position: absolute;
-  top: -40px;
-  right: 0;
+  top: 24px;
+  right: 24px;
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.6);
+  color: inherit;
+  opacity: 0.6;
   cursor: pointer;
   padding: 8px;
-  transition: color 0.2s ease;
+  transition: opacity 0.2s ease;
+  z-index: 10;
 }
 
 .detail-close:hover {
-  color: #fff;
+  opacity: 1;
 }
 
 .detail-content {
-  display: flex;
-  gap: 60px;
-  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-/* Gatefold Layout */
-.detail-gatefold {
-  flex: 1.2;
-  perspective: 1000px;
-}
-
-.gatefold-inner {
-  display: flex;
-  position: relative;
-}
-
-.gatefold-left {
-  width: 180px;
-  height: 360px;
-  background: #1a1a1a;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 20px;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
-}
-
-.gatefold-tracklist {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.track-item {
-  display: flex;
-  gap: 12px;
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.track-num {
-  color: rgba(255, 255, 255, 0.3);
-  font-family: monospace;
-}
-
-.track-name {
-  white-space: nowrap;
+/* Album Cover */
+.detail-cover {
+  aspect-ratio: 1;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.gatefold-center {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 280px;
-  height: 280px;
-  z-index: 1;
-}
-
-.gatefold-vinyl {
-  width: 100%;
-  height: 100%;
-  animation: slowSpin 8s linear infinite;
-}
-
-@keyframes slowSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.gatefold-vinyl .vinyl-svg {
-  width: 100%;
-  height: 100%;
-  filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.6));
-}
-
-.gatefold-right {
-  width: 360px;
-  height: 360px;
-  margin-left: auto;
-  box-shadow: 8px 8px 30px rgba(0, 0, 0, 0.5);
-}
-
-.gatefold-right img {
+.detail-cover img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Detail Info */
+/* Album Info */
 .detail-info {
-  flex: 0.8;
+  padding: 48px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
 }
 
 .detail-year {
-  font-size: 11px;
+  font-family: 'Helvetica', sans-serif;
+  font-size: 12px;
   letter-spacing: 0.1em;
-  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 16px;
 }
 
-.detail-album {
-  font-family: 'Helvetica', sans-serif;
+.detail-title {
+  font-family: 'Georgia', serif;
   font-size: 32px;
   font-weight: 400;
   letter-spacing: -0.02em;
-  color: #fff;
-  margin: 0;
+  margin: 0 0 8px 0;
 }
 
 .detail-artist {
   font-family: 'Helvetica', sans-serif;
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
+  margin: 0 0 24px 0;
+  opacity: 0.7;
 }
 
 .detail-description {
-  font-size: 14px;
+  font-family: 'Georgia', serif;
+  font-size: 15px;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.5);
-  margin: 16px 0;
+  margin: 0 0 32px 0;
+  opacity: 0.8;
 }
 
-.detail-cta {
-  margin-top: 16px;
-  padding: 14px 32px;
-  font-size: 12px;
+.detail-tracklist {
+  margin-top: auto;
+}
+
+.detail-tracklist h4 {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 11px;
   font-weight: 500;
-  text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #000;
-  background: #fff;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  align-self: flex-start;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin: 0 0 16px 0;
 }
 
-.detail-cta:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: translateY(-2px);
+.detail-tracklist ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
 }
 
-/* Responsive Detail Modal */
+.detail-tracklist li {
+  font-family: 'Helvetica', sans-serif;
+  font-size: 13px;
+  opacity: 0.7;
+  counter-increment: track;
+}
+
+.detail-tracklist li::before {
+  content: counter(track, decimal-leading-zero) " ";
+  opacity: 0.4;
+  font-size: 11px;
+}
+
+/* Responsive */
 @media (max-width: 900px) {
+  .press-section {
+    padding: 100px 40px 60px;
+  }
+
+  .press-name {
+    font-size: 32px;
+  }
+
+  .album-card {
+    padding: 24px 32px;
+  }
+
+  .album-card-title {
+    font-size: 20px;
+  }
+
   .detail-content {
-    flex-direction: column;
-    gap: 40px;
+    grid-template-columns: 1fr;
   }
 
-  .detail-gatefold {
-    width: 100%;
-  }
-
-  .gatefold-inner {
-    justify-content: center;
-  }
-
-  .gatefold-left {
-    display: none;
-  }
-
-  .gatefold-right {
-    width: 280px;
-    height: 280px;
-    margin-left: 0;
-  }
-
-  .gatefold-center {
-    width: 220px;
-    height: 220px;
-    left: 30%;
+  .detail-cover {
+    max-height: 300px;
   }
 
   .detail-info {
-    text-align: center;
-    align-items: center;
+    padding: 32px;
   }
 
-  .detail-album {
+  .detail-title {
     font-size: 24px;
   }
 
-  .detail-cta {
-    align-self: center;
+  .detail-tracklist ol {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .press-section {
+    padding: 80px 20px 40px;
+  }
+
+  .press-header {
+    margin-bottom: 40px;
+  }
+
+  .press-name {
+    font-size: 28px;
+  }
+
+  .press-tagline {
+    font-size: 14px;
+  }
+
+  .album-card {
+    padding: 20px 24px;
+  }
+
+  .album-card-title {
+    font-size: 18px;
+  }
+
+  .album-card-artist {
+    font-size: 12px;
+  }
+
+  .detail-overlay {
+    padding: 20px;
+  }
+
+  .detail-info {
+    padding: 24px;
+  }
+
+  .detail-title {
+    font-size: 20px;
+  }
+
+  .detail-description {
+    font-size: 14px;
   }
 }
