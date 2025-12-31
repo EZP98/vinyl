@@ -1,4 +1,4 @@
-/* Vinyl Showcase - Vertical Scroll */
+/* Vinyl Showcase - Grid Layout */
 .vinyl-showcase {
   width: 100%;
   min-height: 100vh;
@@ -6,90 +6,63 @@
   background: #000 url('/background-vinyl.png') center center / cover no-repeat fixed;
   overflow: visible;
   perspective: 1200px;
+  padding: 10vh 5vw;
+  box-sizing: border-box;
 }
 
-/* Needle fixed on the left wall */
-.needle {
-  position: fixed;
-  top: 50%;
-  left: 40px;
-  transform: translateY(-50%) rotate(90deg);
-  transform-origin: center center;
-  width: 220px;
-  height: auto;
-  z-index: 50;
-  pointer-events: none;
-  filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.6));
-}
-
-/* Vinyl vertical stack */
+/* Vinyl grid */
 .vinyl-track {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15vh 0;
-  padding-left: 100px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .vinyl-slider {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25vh;
-  width: 100%;
-  max-width: 600px;
+  gap: 10vh;
 }
 
 .vinyl-card {
   width: 100%;
-  max-width: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
-  perspective: 1000px;
+  transition: transform 0.1s ease-out;
+  transform-style: preserve-3d;
+  cursor: pointer;
 }
 
 .vinyl-image {
   width: 100%;
+  max-width: 400px;
   height: auto;
   object-fit: contain;
   filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5));
-  transform-style: preserve-3d;
-  will-change: transform, opacity, filter;
-}
-
-.vinyl-card:hover .vinyl-image {
-  filter: drop-shadow(0 25px 60px rgba(0, 0, 0, 0.6));
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .needle {
-    width: 150px;
-    left: 20px;
-  }
-
-  .vinyl-track {
-    padding-left: 60px;
+  .vinyl-showcase {
+    padding: 8vh 4vw;
   }
 
   .vinyl-slider {
-    gap: 20vh;
+    gap: 8vh;
   }
 
-  .vinyl-card {
-    max-width: 80vw;
+  .vinyl-image {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .needle {
-    width: 120px;
-    left: 10px;
+  .vinyl-showcase {
+    padding: 6vh 3vw;
   }
 
-  .vinyl-track {
-    padding-left: 40px;
+  .vinyl-slider {
+    gap: 6vh;
   }
 }

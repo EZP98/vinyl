@@ -1,9 +1,5 @@
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useRef } from 'react'
 import './BundleSection.css'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const vinyls = [
   { src: '/vinyl1.png', alt: 'Vinyl 1' },
@@ -13,95 +9,48 @@ const vinyls = [
   { src: '/vinyl5.png', alt: 'Vinyl 5' },
 ]
 
-const BundleSection = () => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const needleRef = useRef<HTMLImageElement>(null)
+const VinylCard = ({ src, alt }: { src: string; alt: string }) => {
+  const cardRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>('.vinyl-card')
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return
 
-      // Each vinyl card animates on scroll into view
-      cards.forEach((card, i) => {
-        const img = card.querySelector('.vinyl-image') as HTMLElement
+    const rect = cardRef.current.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
 
-        // Entry effect - Vinyl Spin Drop with 3D perspective
-        gsap.fromTo(img,
-          {
-            scale: 0.2,
-            opacity: 0,
-            rotation: -360 - (i * 90),
-            x: -200,
-            rotateY: -60,
-            filter: 'blur(12px)'
-          },
-          {
-            scale: 1,
-            opacity: 1,
-            rotation: (i % 2 === 0 ? 3 : -3),
-            x: 0,
-            rotateY: 0,
-            filter: 'blur(0px)',
-            ease: 'elastic.out(1, 0.6)',
-            scrollTrigger: {
-              trigger: card,
-              start: 'top 90%',
-              end: 'top 40%',
-              scrub: 1.2,
-            }
-          }
-        )
+    const rotateX = (y - centerY) / 10
+    const rotateY = (centerX - x) / 10
 
-        // Exit effect - Vinyl Spin Out
-        gsap.to(img, {
-          scale: 0.5,
-          opacity: 0,
-          rotation: 180 + (i * 60),
-          x: 150,
-          rotateY: 45,
-          filter: 'blur(8px)',
-          ease: 'power3.in',
-          scrollTrigger: {
-            trigger: card,
-            start: 'bottom 30%',
-            end: 'bottom -20%',
-            scrub: 1.2,
-          }
-        })
-      })
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`
+  }
 
-      // Needle subtle rotation based on scroll progress
-      if (needleRef.current) {
-        gsap.to(needleRef.current, {
-          rotation: 110,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top top',
-            end: 'bottom bottom',
-            scrub: 2,
-          }
-        })
-      }
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
+  const handleMouseLeave = () => {
+    if (!cardRef.current) return
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)'
+  }
 
   return (
-    <div className="vinyl-showcase" ref={containerRef}>
-      <img
-        ref={needleRef}
-        src="/needle.png"
-        alt="Turntable needle"
-        className="needle"
-      />
+    <div
+      className="vinyl-card"
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <img src={src} alt={alt} className="vinyl-image" />
+    </div>
+  )
+}
+
+const BundleSection = () => {
+  return (
+    <div className="vinyl-showcase">
       <div className="vinyl-track">
         <div className="vinyl-slider">
           {vinyls.map((vinyl, index) => (
-            <div key={index} className="vinyl-card">
-              <img src={vinyl.src} alt={vinyl.alt} className="vinyl-image" />
-            </div>
+            <VinylCard key={index} src={vinyl.src} alt={vinyl.alt} />
           ))}
         </div>
       </div>
